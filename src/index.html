@@ -1,25 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pretty Print JSON</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
     <h1>Pretty Print JSON</h1>
     <div class="container">
-        <div class="form-container">
-            <form id="jsonForm">
-                <textarea name="jsonData" id="jsonData" rows="10" placeholder="Enter JSON here..."></textarea>
-                <button type="submit">Pretty Print</button>
-            </form>
-        </div>
-        <div class="form-container">
-            <h2>Pretty Printed JSON</h2>
-            <textarea id="prettyJson" rows="10" readonly></textarea>
-        </div>
+      <div class="form-container">
+        <form id="jsonForm">
+          <textarea
+            name="jsonData"
+            id="jsonData"
+            rows="10"
+            placeholder="Enter JSON here..."
+          ></textarea>
+          <button type="submit">Pretty Print</button>
+        </form>
+      </div>
+      <div class="form-container">
+        <h2>Pretty Printed JSON</h2>
+        <textarea id="prettyJson" rows="10" readonly></textarea>
+        <button id="copyButton">Copy to Clipboard</button>
+      </div>
     </div>
-    <script src="script.js"></script>
-</body>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const jsonForm = document.getElementById("jsonForm");
+        const jsonDataInput = document.getElementById("jsonData");
+        const prettyJsonOutput = document.getElementById("prettyJson");
+        const copyButton = document.getElementById("copyButton");
+
+        jsonForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const jsonData = jsonDataInput.value;
+          try {
+            const parsedData = JSON.parse(jsonData);
+            const prettyJson = JSON.stringify(parsedData, null, 2);
+            prettyJsonOutput.value = prettyJson;
+          } catch (error) {
+            alert("Invalid JSON");
+          }
+        });
+
+        copyButton.addEventListener("click", function () {
+          prettyJsonOutput.select();
+          document.execCommand("copy");
+          alert("Copied to clipboard");
+        });
+      });
+    </script>
+  </body>
 </html>
