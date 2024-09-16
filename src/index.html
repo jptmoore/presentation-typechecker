@@ -1,57 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pretty Print JSON</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Pretty Print</title>
     <link rel="stylesheet" href="styles.css" />
-  </head>
-
-  <body>
-    <h1>IIIF v3 presentation specifications and W3C web annotations</h1>
+</head>
+<body>
+    <h1>JSON Pretty Print and Validation</h1>
     <div class="container">
-      <div class="form-container">
-        <form id="jsonForm">
-          <textarea
-            name="jsonData"
-            id="jsonData"
-            rows="10"
-            placeholder="Enter JSON here..."
-          ></textarea>
-          <button type="submit">Type check</button>
-        </form>
-      </div>
-      <div class="form-container">
-        <h2>Output</h2>
-        <textarea id="prettyJson" rows="20" readonly></textarea>
-        <button id="copyButton">Copy to Clipboard</button>
-      </div>
+        <div class="form-container">
+            <form id="jsonForm">
+                <textarea
+                    name="jsonData"
+                    id="jsonData"
+                    rows="10"
+                    placeholder="Enter JSON here..."
+                ></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+        <div class="form-container">
+            <h2>Output</h2>
+            <textarea id="prettyJson" rows="20" readonly></textarea>
+        </div>
     </div>
+
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const jsonForm = document.getElementById("jsonForm");
-        const jsonDataInput = document.getElementById("jsonData");
-        const prettyJsonOutput = document.getElementById("prettyJson");
-        const copyButton = document.getElementById("copyButton");
-
-        jsonForm.addEventListener("submit", function (event) {
-          event.preventDefault();
-          const jsonData = jsonDataInput.value;
-          try {
-            const parsedData = JSON.parse(jsonData);
-            const prettyJson = JSON.stringify(parsedData, null, 2);
-            prettyJsonOutput.value = prettyJson;
-          } catch (error) {
-            alert("Invalid JSON");
-          }
+        document.getElementById('jsonForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const jsonData = document.getElementById('jsonData').value;
+            try {
+                const response = await fetch('/pretty-print', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ jsonData })
+                });
+                const result = await response.text();
+                if (!response.ok) {
+                    throw new Error(result);
+                }
+                document.getElementById('prettyJson').value = result;
+            } catch (error) {
+                document.getElementById('prettyJson').value = 'Error: ' + error.message;
+            }
         });
-
-        copyButton.addEventListener("click", function () {
-          prettyJsonOutput.select();
-          document.execCommand("copy");
-          alert("Copied to clipboard");
-        });
-      });
     </script>
-  </body>
+</body>
 </html>

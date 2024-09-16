@@ -1,6 +1,12 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
+import express from 'express';
+import path from 'path';
+import bodyParser from 'body-parser';
+import { fileURLToPath } from 'url';
+import { Maniiifest } from 'maniiifest';
+
+// Define __filename and __dirname in ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = 3000;
@@ -20,13 +26,18 @@ app.get('/', (req, res) => {
 app.post('/pretty-print', (req, res) => {
     try {
         const json = JSON.parse(req.body.jsonData);
-        const prettyJson = JSON.stringify(json, null, 4);
-        res.send(prettyJson);
+        try {
+            new Maniiifest(json);
+            const prettyJson = JSON.stringify(json, null, 4);
+            res.send(prettyJson);
+        } catch (error) {
+            res.status(400).send(error.message);
+        }
     } catch (error) {
-        res.send('Invalid JSON');
+        res.status(400).send(error.message);
     }
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}/`);
 });
