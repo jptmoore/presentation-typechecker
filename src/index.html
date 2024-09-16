@@ -47,8 +47,7 @@
             }
             document.getElementById("prettyJson").value = result;
           } catch (error) {
-            document.getElementById("prettyJson").value =
-              "Error: " + error.message;
+            document.getElementById("prettyJson").value = error.message;
           }
         });
     </script>
