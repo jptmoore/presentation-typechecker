@@ -12,7 +12,7 @@ const app = express();
 const port = 10000;
 
 // Middleware to parse JSON
-app.use(bodyParser.json({ limit: '1mb' })); // Set a limit for the JSON payload
+app.use(bodyParser.json({ limit: '10mb' })); // Set a limit for the JSON payload
 
 // Serve static files from the 'src' directory
 app.use(express.static(path.join(__dirname, '.')));
