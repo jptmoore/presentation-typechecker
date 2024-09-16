@@ -31,7 +31,7 @@ app.post('/pretty-print', (req, res) => {
             const prettyJson = JSON.stringify(json, null, 4);
             res.send(prettyJson);
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(400).send(error.message + error.stack);
         }
     } catch (error) {
         res.status(400).send(error.message);
