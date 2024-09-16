@@ -12,7 +12,7 @@ const app = express();
 const port = 3000;
 
 // Middleware to parse JSON
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '1mb' })); // Set a limit for the JSON payload
 
 // Serve static files from the 'src' directory
 app.use(express.static(path.join(__dirname, '.')));
@@ -27,15 +27,41 @@ app.post('/pretty-print', (req, res) => {
     try {
         const json = JSON.parse(req.body.jsonData);
         try {
-            new Maniiifest(json);
+            switch (json.type) {
+                case "Manifest":
+                case "Collection":
+                    new Maniiifest(json);
+                    break;
+                case "Annotation":
+                    new Maniiifest(json, "Annotation");
+                    break;
+                case "AnnotationPage":
+                    new Maniiifest(json, "AnnotationPage");
+                    break;
+                case "AnnotationCollection":
+                    new Maniiifest(json, "AnnotationCollection");
+                    break;
+                default:
+                    throw new Error(`Invalid type: ${json.type}. Must be one of Manifest, Collection, Annotation, AnnotationPage, AnnotationCollection`);
+            }
             const prettyJson = JSON.stringify(json, null, 4);
             res.send(prettyJson);
         } catch (error) {
             const stackTrace = error.stack.split('\n').slice(0, 3).join('\n');
-            res.status(400).send(error.message + stackTrace);
+            res.status(400).send(`${error.message}\n${stackTrace}`);
         }
     } catch (error) {
-        res.status(400).send(error.message);
+        const stackTrace = error.stack.split('\n').slice(0, 3).join('\n');
+        res.status(400).send(`${error.message}\n${stackTrace}`);
+    }
+});
+
+// Error-handling middleware for PayloadTooLargeError
+app.use((err, req, res, next) => {
+    if (err.type === 'entity.too.large') {
+        res.status(413).send('Payload too large. Please reduce the size of your JSON payload.');
+    } else {
+        next(err);
     }
 });
 
