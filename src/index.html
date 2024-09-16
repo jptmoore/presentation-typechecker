@@ -1,53 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JSON Pretty Print</title>
     <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
+  </head>
+  <body>
     <h1>Maniiifest typechecker</h1>
     <p>Paste your IIIF 3.0 presentation specification or W3C annotation.</p>
     <div class="container">
-        <div class="form-container">
-            <form id="jsonForm">
-                <textarea
-                    name="jsonData"
-                    id="jsonData"
-                    rows="10"
-                    placeholder="Enter JSON here..."
-                ></textarea>
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-        <div class="form-container">
-            <h2>Output</h2>
-            <textarea id="prettyJson" rows="20" readonly></textarea>
-        </div>
+      <div class="form-container">
+        <form id="jsonForm">
+          <textarea
+            name="jsonData"
+            id="jsonData"
+            rows="10"
+            placeholder="Enter JSON here..."
+          ></textarea>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+      <div class="form-container">
+        <h2>Output</h2>
+        <textarea id="prettyJson" rows="20" readonly></textarea>
+      </div>
     </div>
 
     <script>
-        document.getElementById('jsonForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const jsonData = document.getElementById('jsonData').value;
-            try {
-                const response = await fetch('/pretty-print', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ jsonData })
-                });
-                const result = await response.text();
-                if (!response.ok) {
-                    throw new Error(result);
-                }
-                document.getElementById('prettyJson').value = result;
-            } catch (error) {
-                document.getElementById('prettyJson').value = 'Error: ' + error.message;
+      document
+        .getElementById("jsonForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const jsonData = document.getElementById("jsonData").value;
+          try {
+            const response = await fetch("/pretty-print", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ jsonData }),
+            });
+            const result = await response.text();
+            if (!response.ok) {
+              throw new Error(result);
             }
+            document.getElementById("prettyJson").value = result;
+          } catch (error) {
+            document.getElementById("prettyJson").value =
+              "Error: " + error.message;
+          }
         });
     </script>
-</body>
+    <div class="badge-container">
+      <a href="https://github.com/jptmoore/maniiifest" class="badge">
+        <img
+          src="https://img.shields.io/github/stars/jptmoore/maniiifest?style=social"
+          alt="GitHub stars"
+        />
+      </a>
+    </div>
+  </body>
 </html>
