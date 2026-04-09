@@ -16,6 +16,6 @@
     "express": "^4.21.0"
   },
   "devDependencies": {
-    "maniiifest": "^1.4.8"
+    "maniiifest": "^2.0.0"
   }
 }
