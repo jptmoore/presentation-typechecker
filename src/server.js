@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
-import { Maniiifest } from 'maniiifest';
+import { Maniiifest, ManiiifestAnnotation, ManiiifestAnnotationPage, ManiiifestAnnotationCollection } from 'maniiifest';
 import fs from 'fs';
 
 // Define __filename and __dirname in ES module
@@ -38,13 +38,13 @@ app.post('/pretty-print', (req, res) => {
                 new Maniiifest(json);
                 break;
             case "Annotation":
-                new Maniiifest(json, "Annotation");
+                new ManiiifestAnnotation(json);
                 break;
             case "AnnotationPage":
-                new Maniiifest(json, "AnnotationPage");
+                new ManiiifestAnnotationPage(json);
                 break;
             case "AnnotationCollection":
-                new Maniiifest(json, "AnnotationCollection");
+                new ManiiifestAnnotationCollection(json);
                 break;
             default:
                 throw new Error("Must be one of Manifest, Collection, Annotation, AnnotationPage, AnnotationCollection");
